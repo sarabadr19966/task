@@ -19,9 +19,7 @@ const controller = props => {
     <Button variant = "contained" color = "primary" 
     style = {{ width : '200px' }}
     onClick = {props.handleNext}
-    disabled = {props.loading || !(props.photoUploaded.frontImg && props.photoUploaded.backImg) || props.captured} 
-    {...((props.loading || props.error.err || props.activeStep === props.steps.length) && {style : {display: 'none'}})}
-    >
+       >
       {content()}
     </Button>
   );
