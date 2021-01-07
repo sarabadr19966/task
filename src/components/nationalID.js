@@ -7,36 +7,46 @@ import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
+const useStyles = makeStyles(() => ({
+    root:{
+        marginBottom : 40
+    },
+    card: {
+        maxWidth: 200,
+        color:'#727272'
+    },
+    icons : {
+        fontSize : 60,
+    },
+    input : {
+        display : 'none'
+    }
+}));
 
-const useStyles = makeStyles({
-  card: {
-    maxWidth: 200,
-  },
-  icons : {
-    fontSize : 60
-  }
-});
+// uploading national ids
  const NationalId = props =>  {
     const classes = useStyles();
     const backImg = useRef(null); 
     const frontImg = useRef(null); 
-
+    const {onchange ,photoUploaded} = props;
     return ( 
-        <Grid container justify='center' spacing={4} className={classes.root}>
+        <Grid container justify ='center' spacing ={4} className = {classes.root} >
             <Grid item>
-                <input
-                style={{display : 'none'}}
-                onChange ={(e) => props.onchange(e ,'frontImg')}
+                <input 
+                className = {classes.input}
+                onChange ={(e) => onchange(e ,'frontImg')}
                 type = "file"
-                ref={frontImg}
+                ref = {frontImg}
                 />
-                <Card className={classes.card}
-                onClick={()=>frontImg.current.click()}>
+                <Card className = {classes.card}
+                onClick = {() => frontImg.current.click()} >
                     <CardActionArea>
                         <CardContent>
-                            {props.photoUploaded['frontImg'] ? <CloudDoneIcon className={classes.icons} color='primary' /> :
-                            <AddPhotoAlternateIcon className={classes.icons} color='primary'/>}
-                            <Typography variant="body2" color="textSecondary" component="p">
+                            {photoUploaded['frontImg'] ? <CloudDoneIcon className = {classes.icons} color = 'primary' /> 
+                                :
+                                <AddPhotoAlternateIcon className = {classes.icons} color = 'primary'/>
+                            }
+                            <Typography variant = "body2" color = "textSecondary" component = "p">
                                 Add Front Image Of  your National ID
                             </Typography>
                         </CardContent>
@@ -44,19 +54,21 @@ const useStyles = makeStyles({
                 </Card>
             </Grid>
             <Grid item>
-                <input
-                style={{display : 'none'}}
-                onChange ={(e) => props.onchange(e ,'backImg')}
+                <input 
+                className = {classes.input}
+                onChange = {(e) => onchange(e ,'backImg')}
                 type = "file"
-                ref={backImg}
+                ref = {backImg}
                 />
-                <Card className={classes.card}
-                onClick={()=>backImg.current.click()}>
+                <Card className = {classes.card}
+                onClick = {() => backImg.current.click()}>
                     <CardActionArea>
                         <CardContent>
-                            {props.photoUploaded['backImg'] ? <CloudDoneIcon className={classes.icons} color='primary' /> :
-                            <AddPhotoAlternateIcon className={classes.icons} color='primary'/>}
-                            <Typography variant="body2" color="textSecondary" component="p">
+                            {photoUploaded['backImg'] ? <CloudDoneIcon className = {classes.icons}  color = 'primary'/> 
+                                :
+                                <AddPhotoAlternateIcon className = {classes.icons} color = 'primary'/>
+                            }
+                            <Typography variant = "body2" color = "textSecondary" >
                                 Add Back Image Of  Your National ID
                             </Typography>
                         </CardContent>

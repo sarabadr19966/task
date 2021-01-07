@@ -1,37 +1,18 @@
 import React ,{useState} from "react";
-
-import { makeStyles } from "@material-ui/core/styles";
-import Stepper from "@material-ui/core/Stepper";
-import Step from "@material-ui/core/Step";
-import StepLabel from "@material-ui/core/StepLabel";
 import Grid from '@material-ui/core/Grid'
-
+import Stepper from '../components/stepper'
 
 import NationalID from '../components/nationalID';
-import TakePicture from '../components/TakePicture';
+import TakePicture from './TakePicture';
 import ClientInformation from '../components/clientInformation';
 import Controller from '../components/Controller'
 import AccountCreation from '../components/accountCreation';
 
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "100%",
-  },
-  backButton: {
-    marginRight: theme.spacing(1)
-  },
-  instructions: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1)
-  },
-
-}));
 
 
 const  BankAccount = ()=> {
 
-  const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [photoUploaded ,setPhotoUploaded] = useState({frontImg : '' ,backImg : ''});
   const [clientInfo ,setClientInfo] = useState({})
@@ -41,13 +22,16 @@ const  BankAccount = ()=> {
   const [captured ,setCaptured] = useState(false);
   
   const photoUploadedHandler = (e ,label) => {
-    let file = e.target.files[0];
-    let reader = new FileReader();
-    reader.onload = () => {
-      var imgBase64 = reader.result.replace(/^data:.+;base64,/ ,'');
-      setPhotoUploaded(prevState => ({...prevState ,[label] : imgBase64}));
-    };
-    reader.readAsDataURL(file);
+    if(e.target.files[0]){
+      let file = e.target.files[0];
+      let reader = new FileReader();
+      reader.onload = () => {
+        var imgBase64 = reader.result.replace(/^data:.+;base64,/ ,'');
+        setPhotoUploaded(prevState => ({...prevState ,[label] : imgBase64}));
+      };
+      reader.readAsDataURL(file);
+    }
+
   }
 
   const getStepContent = (stepIndex) =>{
@@ -65,11 +49,12 @@ const  BankAccount = ()=> {
   
 
   const steps = [
-    "Upload Image Of Your Egyptian National ID",
-    "Confirm Your Information",
-    "Take Selfie Image From The Camera"
+    "",
+    "",
+    ""
   ];
-
+  
+   // go to the next step
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     switch(activeStep){
@@ -85,7 +70,7 @@ const  BankAccount = ()=> {
 
   };
 
-
+  // getting th access token 
   const getAccessToken = () => {
     var params = new URLSearchParams();
     var parametersToAdd = {
@@ -113,6 +98,7 @@ const  BankAccount = ()=> {
     .catch(err=>console.log(err))
   }
 
+  // send Natioanl ID photos to the server
   const uploadPhotosClicked =()=>{
     setLoading(true)
     getAccessToken().then(token =>{
@@ -155,6 +141,7 @@ const  BankAccount = ()=> {
     })
   }
 
+  // send the image took from camera to the server
   const createAccountClicked = () =>{
     setLoading(true);
     let liveImg = document.querySelector('#dowload-photo');
@@ -197,6 +184,7 @@ const  BankAccount = ()=> {
     })
   }
 
+  // go to the last step to redo it 
   const handleTryAgin = () => {
     if(activeStep === 1){
       setPhotoUploaded('')
@@ -208,26 +196,21 @@ const  BankAccount = ()=> {
   
   }; 
 
+  // get the captured from TookPicture component
   const getCapture =(capture)=>{
     setCaptured(capture)
   }
 
 
   return (
-    <Grid container direction='column' className={classes.root} >
-      <Grid item style={{marginBottom:50}}>
-        <Stepper activeStep={activeStep} alternativeLabel className={classes.stepper}>
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
+    <Grid container direction='column'justify='center' spacing={4} >
+      <Grid item >
+        <Stepper activeStep={activeStep} steps={steps}/>
       </Grid>
         {activeStep === steps.length ? (
           <AccountCreation loading={loading} similar={accountCreated} tryAgain={handleTryAgin} error = {err}/>
-        ) : getStepContent(activeStep)}
-      <Grid item style={{marginTop:70}}>
+        ) : <Grid item>{getStepContent(activeStep)}</Grid>}
+      <Grid item >
         <Controller 
         handleNext = {handleNext}
         activeStep = {activeStep}
@@ -236,6 +219,7 @@ const  BankAccount = ()=> {
         captured = {captured}
         error = {err}
         steps = {steps}
+        tryAgain={handleTryAgin}
         />
       </Grid>
     </Grid>
